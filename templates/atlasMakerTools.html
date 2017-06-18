@@ -21,12 +21,17 @@
 		</div>
 
 		<div class="loginRequired">
+			<div id="syncViews">
+				<input type="checkbox" id="sync"><label for="sync">Sync Views</label>
+			</div>
+
 			<div id="paintTools">
 				<span id="tool">						
 					<input type="radio" name="tool" id="paint" checked="checked"><label for="paint">Paint</label>
 					<input type="radio" name="tool" id="erase"><label for="erase">Erase</label>
 				</span>
 				<input type="checkbox" id="fill"><label for="fill">Fill</label>
+				<button id="3drender">3D</button>
 				<button id="undo">Undo</button>
 			</div>
 
@@ -38,6 +43,10 @@
 				<input type="radio" name="penSize" id="10"><label for="10">10</label>
 				<input type="radio" name="penSize" id="15"><label for="15">15</label>
 			</div>
+
+			<div id="preciseCursor">
+				<input type="checkbox" id="precise"><label for="precise">Precise Cursor</label>
+			</div>
 		</div>
 	</div>
 	
@@ -46,7 +55,7 @@
 		<label id="chat">Chat (not connected)</label>
 		<div id="log"></div>
 		<div class="loginRequired">
-			<input id="msg" type="text" onkeypress="onkey(event)">
+			<input id="msg" type="text" onkeypress="AtlasMakerWidget.onkey(event)">
 		</div>
 	</div>
 </div>

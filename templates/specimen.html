@@ -5,7 +5,7 @@
     <meta name=viewport content="width=device-width, initial-scale=1">
     <title><!--SPECIMEN--></title>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
-	<link href='http://fonts.googleapis.com/css?family=Droid+Serif' rel='stylesheet' type='text/css'/>
+	<link href='https://fonts.googleapis.com/css?family=Droid+Serif' rel='stylesheet' type='text/css'/>
 	<link href='https://fonts.googleapis.com/css?family=Quicksand' rel='stylesheet' type='text/css'>
 	<link rel="stylesheet" href="/lib/jquery-ui.css">
 	<link rel="stylesheet" href="/css/common.css" type="text/css" media="screen, projection" />
@@ -17,7 +17,12 @@
 	</style>
 </head>
 
-<body>
+<body ontouchmove="blockScroll(event)">
+<script>
+function blockScroll(event){
+	//event.preventDefault();
+}
+</script>
 
 <div id="wrapper">
 
@@ -83,14 +88,14 @@
 		<table>
 		<tr>
 		<td>
-		<a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/deed.en_US">
+		<a rel="license" href="https://creativecommons.org/licenses/by-sa/3.0/deed.en_US">
 		<img align="left" alt="Creative Commons License" src="/img/88x31.png" />
 		</a>
 		</td>
 		<td>
 		<span xmlns:dct="http://purl.org/dc/terms/" property="dct:title">Brain Catalogue</span> by
-		<a xmlns:cc="http://creativecommons.org/ns#" href="siphonophore.org/braincatalogue" property="cc:attributionName" rel="cc:attributionURL">Roberto Toro</a>
-		is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/deed.en_US">Creative Commons Attribution-ShareAlike 3.0 Unported License</a>.
+		<a xmlns:cc="https://creativecommons.org/ns#" href="siphonophore.org/braincatalogue" property="cc:attributionName" rel="cc:attributionURL">Roberto Toro</a>
+		is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by-sa/3.0/deed.en_US">Creative Commons Attribution-ShareAlike 3.0 Unported License</a>.
 		</td>
 		</tr>
 		</table>
@@ -104,7 +109,7 @@ var info=JSON.parse('<!--INFO-->');
 // load stored description from wikipedia
 console.log("Object read from info.txt",info);
 // Load image
-$("div#picture").html("<img class='picture' src='/data/"+info.name+"/picture.jpg'/>");
+$("div#picture").html("<img class='picture' src='/data/"+escape(info.name)+"/picture.jpg'/>");
 // Load text
 var description=info.description.commonName;
 if(info.description.scientificName!=undefined)
@@ -178,11 +183,12 @@ function exitEditMode() {
 	// configure toolbar for display mode
 	$("div#toolbar").draggable('destroy');
 	$("div#toolbar").resizable('destroy');
-	$("div#toolbar").css({top:0,left:0});
+	$("div#toolbar").removeAttr("style");
 }
 function selectAtlas(index) {
 	console.log("> selectAtlas",index);
 	AtlasMakerWidget.configureAtlasMaker(info,index);
+	$("#atlas_download").attr("href","/data/"+info.name+"/"+info.mri.atlas[index].filename);
 }
 
 MyLoginWidget.init($("#MyLogin"));
@@ -191,18 +197,20 @@ if(info.mri.brain) {
 	$("#data").append('<div id="stereotaxic"></div>');
 
 	// Add MRI download link
-	$("#stereotaxic").append("<a class='download_MRI download' href='/data/"+info.name+"/MRI-n4.nii.gz'></a>");
+	$("#stereotaxic").append("<a class='download_MRI download' href='/data/"+info.name+"/"+info.mri.brain+"'></a>");
 	
 	// Add Atlas edit and selection links
 	$("#stereotaxic").append("<span class='edit_Atlas download'></span>");
 	var i,html=[
+		"<a id='atlas_download' href=''><img src='/img/download.svg' style='vertical-align:middle'/></a>",
 		"<img src='/img/edit.svg' onclick='enterEditMode()' style='vertical-align:middle'/>",
-		"<select style='margin-left:-8px;' onchange='selectAtlas(this.value)'>"
+		"<select onchange='selectAtlas(this.value)'>"
 	];
 	for(i=0;i<info.mri.atlas.length;i++)
 		html.push('	<option value='+i+'>'+info.mri.atlas[i].name+'</option>');
 	html.push('</select>');
-	$("#stereotaxic").find(".edit_Atlas").append(html.join("\n"));
+	$("#stereotaxic").find(".edit_Atlas").append(html.join(""));
+	$("#atlas_download").attr("href","/data/"+info.name+"/"+info.mri.atlas[parseInt($("select").val())].filename);
 	
 	// Add AtlasMaker
 	$("#stereotaxic").append('<div id="atlasMaker"></div>');
